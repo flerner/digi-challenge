@@ -1,3 +1,6 @@
+import { useRouter } from 'next/router'
+
 export default function Page() {
-  return <div></div>;
+  const router = useRouter()
+  return <div>{router.query.path}</div>
 }
