@@ -1,10 +1,9 @@
 import axios from 'axios'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Button, Container, Row, Col, Input } from 'reactstrap'
 
 export default function Page({ data }) {
-  console.log(data.inputs)
   const [formData, setFormData] = useState({})
 
   const handleChange = (e) => {
@@ -100,13 +99,13 @@ export default function Page({ data }) {
   )
 }
 
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
   const { path } = params
-
+  console.log(path)
   try {
     const res = await axios.get(`http://localhost:3000/configuration/${path}`)
     const data = res.data
-
+    console.log(data)
     return {
       props: {
         data,
@@ -115,16 +114,10 @@ export async function getStaticProps({ params }) {
   } catch (error) {
     console.error('Error fetching data:', error)
     return {
-      props: {
-        data: null,
+      redirect: {
+        destination: '/404',
+        permanent: false,
       },
     }
-  }
-}
-
-export async function getStaticPaths() {
-  return {
-    paths: [{ params: { path: 'login' } }, { params: { path: 'register' } }],
-    fallback: false,
   }
 }

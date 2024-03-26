@@ -9,13 +9,17 @@ class ConfigurationController {
     404 if configuration doesn't exists
   */
   get(req, res) {
-    const path = req.params.path
-    //check if config exist
-    const configExist = Object.hasOwn(this.configurationService.model, path)
-    if (configExist) {
-      return res.status(200).send(this.configurationService.model[path])
-    } else {
-      return res.status(404).send("configuration doesn't exists")
+    try {
+      const path = req.params.path
+      //check if config exist
+      const configExist = Object.hasOwn(this.configurationService.model, path)
+      if (configExist) {
+        return res.status(200).send(this.configurationService.model[path])
+      } else {
+        return res.status(404).send("configuration doesn't exists")
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 }
