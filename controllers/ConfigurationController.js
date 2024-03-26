@@ -11,10 +11,9 @@ class ConfigurationController {
   get(req, res) {
     const path = req.params.path
     //check if config exist
-    console.log()
     const configExist = Object.hasOwn(this.configurationService.model, path)
     if (configExist) {
-      return res.status(200).send('ok')
+      return res.status(200).send(this.configurationService.model[path])
     } else {
       return res.status(404).send("configuration doesn't exists")
     }
