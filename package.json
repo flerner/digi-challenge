@@ -7,12 +7,13 @@
   },
   "dependencies": {
     "axios": "^1.6.8",
+    "bootstrap": "^5.3.3",
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "next": "latest",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "reactstrap": "^8.9.0"
+    "reactstrap": "^8.10.1"
   },
   "license": "MIT"
 }
