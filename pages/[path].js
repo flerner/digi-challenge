@@ -7,18 +7,31 @@ import { Button, Checkbox, ContactUs, InputText, Select } from '../components'
 export default function Page({ data }) {
   const [formData, setFormData] = useState({})
   const [hasError, setHasError] = useState({})
-  const handleChange = (e, regex) => {
+  const handleChange = (e, config) => {
     console.log(hasError)
+    console.log(formData)
     const newState = formData
     const { name, value } = e.target
     newState[name] = value
-    if (regex) {
-      hasError[name] = !new RegExp(regex).test(value)
-    } else {
-      hasError[name] = newState[name] === ''
-    }
+
+    hasError[name] = !isValid(value, config)
 
     setFormData({ ...newState })
+  }
+  const isValid = (value, { regex, conditions }) => {
+    const isRegexValid = !regex || new RegExp(regex).test(value)
+    const areConditionsValid =
+      !conditions?.validations ||
+      conditions.validations.every((config) => {
+        return validationParser[config.comparision](config)
+      })
+    console.log(
+      'isRegexValid',
+      isRegexValid,
+      'areConditionsValid',
+      areConditionsValid
+    )
+    return isRegexValid && areConditionsValid
   }
   const handleCheckbox = (e) => {
     const newState = formData
@@ -28,7 +41,7 @@ export default function Page({ data }) {
   }
   useEffect(() => {
     const initialFormData = {}
-    const initialaErrorData = {}
+
     //initialize all data in empty or false
     data.inputs.forEach((element) => {
       if (element.name) {
@@ -39,33 +52,48 @@ export default function Page({ data }) {
         )
         if (element.type === 'checkbox') {
           initialFormData[element.name] = false
-          initialaErrorData[element.name] = false
+          hasError[element.name] = false
+        } else if (element.name === 'custom_country') {
+          initialFormData[element.name] = ''
+          hasError[element.name] = false
         } else {
           if (isConfirmField) {
             initialFormData[element.name + '-confirm'] = ''
-            initialaErrorData[element.name + '-confirm'] = true
+            hasError[element.name + '-confirm'] = true
           } else {
             initialFormData[element.name] = ''
-            initialaErrorData[element.name] = true
+            hasError[element.name] = true
           }
         }
       }
     })
     setFormData(initialFormData)
-    setHasError(initialaErrorData)
   }, [])
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log('Form submitted with data:', formData)
+    if (isFormValid()) {
+      console.log('Form submitted with data:', formData)
+      //post
+    } else {
+      console.log('Form not valid')
+    }
+  }
+  const isFormValid = () => {
+    return !data.inputs.some((config) => {
+      if (config.name === 'custom_country') {
+        return formData[config.name] === '' && formData['country'] === 'other'
+      }
+      return !isValid(formData[config.name], config)
+    })
   }
   const inputs = {
-    email: ({ type, name, label, regex }) => {
+    email: ({ type, name, label, regex, conditions }) => {
       return (
         <InputText
           type={type}
           name={name}
           label={label}
-          handleChange={(e) => handleChange(e, regex)}
+          handleChange={(e) => handleChange(e, { regex, conditions })}
           value={formData[name]}
           regex={regex}
           error={hasError[name]}
@@ -82,7 +110,7 @@ export default function Page({ data }) {
           conditions={conditions}
           render={render}
           value={formData[name]}
-          handleChange={(e) => handleChange(e, regex)}
+          handleChange={(e) => handleChange(e, { regex, conditions })}
           regex={regex}
           error={hasError[name]}
         />
@@ -96,13 +124,13 @@ export default function Page({ data }) {
           label={label}
           conditions={conditions}
           value={conditions ? formData[name + '-confirm'] : formData[name]}
-          handleChange={(e) => handleChange(e, regex)}
+          handleChange={(e) => handleChange(e, { regex, conditions })}
           regex={regex}
           error={conditions ? hasError[name + '-confirm'] : hasError[name]}
         />
       )
     },
-    select: ({ type, name, label, options }) => {
+    select: ({ type, name, label, options, regex, conditions }) => {
       return (
         <Select
           type={type}
@@ -110,7 +138,7 @@ export default function Page({ data }) {
           label={label}
           options={options}
           value={formData[name]}
-          handleChange={(e) => handleChange(e)}
+          handleChange={(e) => handleChange(e, { regex, conditions })}
         />
       )
     },
@@ -157,7 +185,7 @@ export default function Page({ data }) {
   return (
     <Container>
       <Row className='justify-content-center'>
-        <Col md={6}>
+        <Col md={6} className='border border-dark rounded'>
           <form onSubmit={handleSubmit}>
             {data.inputs.map((config, index) => {
               const shouldRender = checkRenderConditions(
