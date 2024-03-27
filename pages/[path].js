@@ -118,8 +118,8 @@ export default function Page({ data }) {
       !renderConditions ||
       (renderConditions &&
         renderConditions.every((conditions) => {
-          conditions.every((config) => {
-            validationParser[config?.comparision](config)
+          return conditions.every((config) => {
+            return validationParser[config?.comparision](config)
           })
         }))
     )
