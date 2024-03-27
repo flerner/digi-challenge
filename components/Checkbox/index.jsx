@@ -7,7 +7,7 @@ const Checkbox = ({ type, name, checked, handleChange, label }) => {
                 type={type}
                 name={name}
                 checked={checked || false}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
 
             />
             <label>{label}</label>

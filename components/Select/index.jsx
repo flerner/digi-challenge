@@ -11,6 +11,7 @@ const Select = ({ label, type, name, value, handleChange, options }) => {
                 value={value || ''}
                 onChange={handleChange}
             >
+                <option value="">Choose One</option>
                 {options.map((option, optionIndex) => (
                     <option key={optionIndex} value={option.value}>
                         {option.label}

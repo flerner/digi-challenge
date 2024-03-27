@@ -7,9 +7,19 @@ import { Button, Checkbox, ContactUs, InputText, Select } from '../components'
 export default function Page({ data }) {
   const [formData, setFormData] = useState({})
   const handleChange = (e) => {
+    console.log(formData)
     const newState = formData
     const { name, value } = e.target
+
     newState[name] = value
+    setFormData({ ...newState })
+  }
+  const handleCheckbox = (e) => {
+    console.log(formData)
+    const newState = formData
+    const { name, checked } = e.target
+    console.log(name, checked)
+    newState[name] = checked
     setFormData({ ...newState })
   }
   useEffect(() => {
@@ -96,8 +106,8 @@ export default function Page({ data }) {
           type={type}
           name={name}
           label={label}
-          value={formData[name]}
-          handleChange={(e) => handleChange(e)}
+          checked={formData[name]}
+          handleChange={(e) => handleCheckbox(e)}
         />
       )
     },
@@ -133,6 +143,7 @@ export default function Page({ data }) {
               const shouldRender = checkRenderConditions(
                 config?.conditions?.render
               )
+              console.log(config.type, shouldRender, config)
 
               return (
                 shouldRender && (

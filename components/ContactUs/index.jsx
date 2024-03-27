@@ -1,10 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-const ContactUs = ({ target, text }) => {
+const ContactUs = ({ target, type, to, label }) => {
     return (
         <div className='mb-3'>
-            <a href={target} target={target}>
-                {text}
+            <a href={to} target={target}>
+                {label}
             </a>
         </div>
     )
