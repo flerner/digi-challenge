@@ -9,8 +9,8 @@ const InputText = ({ type, name, value, handleChange, required, label }) => {
             <Input
                 type={type}
                 name={name}
-                value={value || ''}
-                onChange={handleChange}
+                value={value}
+                onChange={(e) => handleChange(e)}
                 required={required}
             />
         </div>

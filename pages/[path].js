@@ -6,21 +6,45 @@ import { Button, Checkbox, ContactUs, InputText, Select } from '../components'
 
 export default function Page({ data }) {
   const [formData, setFormData] = useState({})
-  const [inputText, setInputText] = useState('text eaea')
-  const [checked, setChecked] = useState(false)
-  const [selectValue, setSelectValue] = useState('')
   const handleChange = (e) => {
+    const newState = formData
     const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+    newState[name] = value
+    setFormData({ ...newState })
   }
-
+  useEffect(() => {
+    const initialFormData = {}
+    data.inputs.forEach((element) => {
+      if (element.name) {
+        const isConfirmField = element?.conditions?.validations?.some(
+          (validation) => {
+            validation?.comparison === 'same'
+          }
+        )
+        if (isConfirmField) {
+          initialFormData[element.name + '-confirm'] = ''
+        } else {
+          initialFormData[element.name] = ''
+        }
+      }
+    })
+    setFormData(initialFormData)
+  }, [])
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log('Form submitted with data:', formData)
   }
   const inputs = {
     email: ({ type, name, label, regex }) => {
-      return <InputText type={type} name={name} label={label} />
+      return (
+        <InputText
+          type={type}
+          name={name}
+          label={label}
+          handleChange={(e) => handleChange(e)}
+          value={formData[name]}
+        />
+      )
     },
     text: ({ type, name, label, regex, required, conditions, render }) => {
       return (
@@ -31,6 +55,8 @@ export default function Page({ data }) {
           required={required}
           conditions={conditions}
           render={render}
+          value={formData[name]}
+          handleChange={(e) => handleChange(e)}
         />
       )
     },
@@ -38,14 +64,25 @@ export default function Page({ data }) {
       return (
         <InputText
           type={type}
-          name={name}
+          name={conditions ? name + '-confirm' : name}
           label={label}
           conditions={conditions}
+          value={conditions ? formData[name + '-confirm'] : formData[name]}
+          handleChange={(e) => handleChange(e)}
         />
       )
     },
     select: ({ type, name, label, options }) => {
-      return <Select type={type} name={name} label={label} options={options} />
+      return (
+        <Select
+          type={type}
+          name={name}
+          label={label}
+          options={options}
+          value={formData[name]}
+          handleChange={(e) => handleChange(e)}
+        />
+      )
     },
     button: ({ type, label, method }) => {
       return <Button type={type} label={label} method={method} />
@@ -54,60 +91,55 @@ export default function Page({ data }) {
       return <ContactUs type={type} to={to} target={target} label={label} />
     },
     checkbox: ({ type, name, label }) => {
-      return <Checkbox type={type} name={name} label={label} />
+      return (
+        <Checkbox
+          type={type}
+          name={name}
+          label={label}
+          value={formData[name]}
+          handleChange={(e) => handleChange(e)}
+        />
+      )
     },
   }
+  const validationParser = {
+    includes: ({ input, values }) => {
+      return values.some((val) => val === formData[input])
+    },
+    not_includes: ({ input, values }) => {
+      return !values.some((val) => val === formData[input])
+    },
+    same: ({ input }) => {
+      return formData[input] === formData[input + '-confirm']
+    },
+  }
+  const checkRenderConditions = (renderConditions) => {
+    return (
+      !renderConditions ||
+      (renderConditions &&
+        renderConditions.every((conditions) => {
+          conditions.every((config) => {
+            validationParser[config?.comparision](config)
+          })
+        }))
+    )
+  }
   return (
-    // <div>
-    //   <Button type='button' label='Send' />
-    //   <Checkbox
-    //     type='checkbox'
-    //     name='checkbox'
-    //     checked={checked}
-    //     handleChange={(e) => {
-    //       console.log(checked)
-    //       setChecked(e.target.checked)
-    //     }}
-    //     label='Checkbox'
-    //   />
-    //   <ContactUs
-    //     target='https://digiventures.la/'
-    //     text='¿Any problem? Contact us'
-    //   />
-    //   <InputText
-    //     name='Asd'
-    //     type='text'
-    //     value={inputText}
-    //     handleChange={(e) => {
-    //       console.log(inputText)
-    //       setInputText(e.target.value)
-    //     }}
-    //     required={true}
-    //     label='Nombre'
-    //   />
-    //   <Select
-    //     label='select'
-    //     type='select'
-    //     name='select'
-    //     value={selectValue}
-    //     handleChange={(e) => {
-    //       console.log(selectValue)
-    //       setSelectValue(e.target.value)
-    //     }}
-    //     options={[
-    //       { value: 'hola', label: 'chau' },
-    //       { value: 'asd', label: 'dsa' },
-    //     ]}
-    //   />
-    // </div>
     <Container>
       <Row className='justify-content-center'>
         <Col md={6}>
           <form onSubmit={handleSubmit}>
-            {data &&
-              data.inputs.map((config, index) => {
-                return inputs[config.type](config)
-              })}
+            {data.inputs.map((config, index) => {
+              const shouldRender = checkRenderConditions(
+                config?.conditions?.render
+              )
+
+              return (
+                shouldRender && (
+                  <div key={index}>{inputs[config.type](config)}</div>
+                )
+              )
+            })}
           </form>
         </Col>
       </Row>
@@ -196,11 +228,9 @@ export default function Page({ data }) {
 
 export async function getServerSideProps({ params }) {
   const { path } = params
-  console.log(path)
   try {
     const res = await axios.get(`http://localhost:3000/configuration/${path}`)
     const data = res.data
-    console.log(data)
     return {
       props: {
         data,
