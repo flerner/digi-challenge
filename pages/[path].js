@@ -3,13 +3,12 @@ import { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Button as ReactstrapButton, Container, Row, Col } from 'reactstrap'
 import { Button, Checkbox, ContactUs, InputText, Select } from '../components'
+import { getInputs, sendUser } from '../utils/axiosUtils.js'
 
-export default function Page({ data }) {
+export default function Page({ data, path }) {
   const [formData, setFormData] = useState({})
   const [hasError, setHasError] = useState({})
   const handleChange = (e, config) => {
-    console.log(hasError)
-    console.log(formData)
     const newState = formData
     const { name, value } = e.target
     newState[name] = value
@@ -25,12 +24,6 @@ export default function Page({ data }) {
       conditions.validations.every((config) => {
         return validationParser[config.comparision](config)
       })
-    console.log(
-      'isRegexValid',
-      isRegexValid,
-      'areConditionsValid',
-      areConditionsValid
-    )
     return isRegexValid && areConditionsValid
   }
   const handleCheckbox = (e) => {
@@ -69,11 +62,16 @@ export default function Page({ data }) {
     })
     setFormData(initialFormData)
   }, [])
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (isFormValid()) {
       console.log('Form submitted with data:', formData)
-      //post
+      try {
+        const responseData = await sendUser(path, formData)
+        console.log('POST ok', responseData)
+      } catch (error) {
+        console.log('POST error', error)
+      }
     } else {
       console.log('Form not valid')
     }
@@ -287,11 +285,12 @@ export default function Page({ data }) {
 export async function getServerSideProps({ params }) {
   const { path } = params
   try {
-    const res = await axios.get(`http://localhost:3000/configuration/${path}`)
-    const data = res.data
+    const data = await getInputs(path)
+
     return {
       props: {
         data,
+        path,
       },
     }
   } catch (error) {

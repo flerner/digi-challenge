@@ -5,23 +5,30 @@ const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
+const bodyParser = require('body-parser')
 
 //Configuration requires
 const ConfigurationModel = require('./models/inputs.json')
 const ConfigurationService = require('./services/ConfigurationService')
 const ConfigurationController = require('./controllers/ConfigurationController')
-
 //Configuration instances
 const ConfigurationServiceInstance = new ConfigurationService(
   ConfigurationModel
 )
-
 const ConfigurationControllerInstance = new ConfigurationController(
   ConfigurationServiceInstance
 )
+//User requires
+const UserService = require('./services/UserService')
+const UserController = require('./controllers/UserController')
+//User instances
+const UserServiceInstance = new UserService({})
+const UserControllerInstance = new UserController(UserServiceInstance)
 
 app.prepare().then(() => {
   const server = express()
+  server.use(bodyParser.json())
+  server.use(bodyParser.urlencoded({ extended: true }))
 
   //get configuration by path
   server.get('/configuration/:path', (req, res) =>
@@ -29,7 +36,7 @@ app.prepare().then(() => {
   )
 
   server.post('/:path', (req, res) => {
-    console.log(req.body)
+    UserControllerInstance.post(req, res)
 
     return res.sendStatus(200)
   })
