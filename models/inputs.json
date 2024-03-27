@@ -47,7 +47,7 @@
         "type": "email",
         "name": "email",
         "label": "Email",
-        "regex": "^[w-.]+@([w-]+.)+[w-]{2,4}$"
+        "regex": "^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$"
       },
       {
         "type": "text",

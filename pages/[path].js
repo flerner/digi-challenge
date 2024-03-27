@@ -6,24 +6,30 @@ import { Button, Checkbox, ContactUs, InputText, Select } from '../components'
 
 export default function Page({ data }) {
   const [formData, setFormData] = useState({})
-  const handleChange = (e) => {
-    console.log(formData)
+  const [hasError, setHasError] = useState({})
+  const handleChange = (e, regex) => {
+    console.log(hasError)
     const newState = formData
     const { name, value } = e.target
-
     newState[name] = value
+    if (regex) {
+      hasError[name] = !new RegExp(regex).test(value)
+    } else {
+      hasError[name] = newState[name] === ''
+    }
+
     setFormData({ ...newState })
   }
   const handleCheckbox = (e) => {
-    console.log(formData)
     const newState = formData
     const { name, checked } = e.target
-    console.log(name, checked)
     newState[name] = checked
     setFormData({ ...newState })
   }
   useEffect(() => {
     const initialFormData = {}
+    const initialaErrorData = {}
+    //initialize all data in empty or false
     data.inputs.forEach((element) => {
       if (element.name) {
         const isConfirmField = element?.conditions?.validations?.some(
@@ -31,14 +37,22 @@ export default function Page({ data }) {
             validation?.comparison === 'same'
           }
         )
-        if (isConfirmField) {
-          initialFormData[element.name + '-confirm'] = ''
+        if (element.type === 'checkbox') {
+          initialFormData[element.name] = false
+          initialaErrorData[element.name] = false
         } else {
-          initialFormData[element.name] = ''
+          if (isConfirmField) {
+            initialFormData[element.name + '-confirm'] = ''
+            initialaErrorData[element.name + '-confirm'] = true
+          } else {
+            initialFormData[element.name] = ''
+            initialaErrorData[element.name] = true
+          }
         }
       }
     })
     setFormData(initialFormData)
+    setHasError(initialaErrorData)
   }, [])
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -51,8 +65,10 @@ export default function Page({ data }) {
           type={type}
           name={name}
           label={label}
-          handleChange={(e) => handleChange(e)}
+          handleChange={(e) => handleChange(e, regex)}
           value={formData[name]}
+          regex={regex}
+          error={hasError[name]}
         />
       )
     },
@@ -66,7 +82,9 @@ export default function Page({ data }) {
           conditions={conditions}
           render={render}
           value={formData[name]}
-          handleChange={(e) => handleChange(e)}
+          handleChange={(e) => handleChange(e, regex)}
+          regex={regex}
+          error={hasError[name]}
         />
       )
     },
@@ -78,7 +96,9 @@ export default function Page({ data }) {
           label={label}
           conditions={conditions}
           value={conditions ? formData[name + '-confirm'] : formData[name]}
-          handleChange={(e) => handleChange(e)}
+          handleChange={(e) => handleChange(e, regex)}
+          regex={regex}
+          error={conditions ? hasError[name + '-confirm'] : hasError[name]}
         />
       )
     },
@@ -107,7 +127,7 @@ export default function Page({ data }) {
           name={name}
           label={label}
           checked={formData[name]}
-          handleChange={(e) => handleCheckbox(e)}
+          handleCheckbox={(e) => handleCheckbox(e)}
         />
       )
     },
@@ -143,7 +163,6 @@ export default function Page({ data }) {
               const shouldRender = checkRenderConditions(
                 config?.conditions?.render
               )
-              console.log(config.type, shouldRender, config)
 
               return (
                 shouldRender && (

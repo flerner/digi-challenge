@@ -4,7 +4,7 @@ import { Button as ReactButton } from 'reactstrap'
 const Button = ({ type, label }) => {
     return (
         <div className='mb-3'>
-            <ReactButton type={type}>{label}</ReactButton>
+            <ReactButton type="submit">{label}</ReactButton>
         </div>
     )
 }

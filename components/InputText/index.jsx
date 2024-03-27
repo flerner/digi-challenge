@@ -1,8 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Input } from 'reactstrap'
+import { Input, FormFeedback } from 'reactstrap'
 
 
-const InputText = ({ type, name, value, handleChange, required, label }) => {
+const InputText = ({ type, name, value, handleChange, required, label, regex, error, }) => {
     return (
         <div className='mb-3'>
             <label>{label}</label>
@@ -10,9 +10,11 @@ const InputText = ({ type, name, value, handleChange, required, label }) => {
                 type={type}
                 name={name}
                 value={value}
-                onChange={(e) => handleChange(e)}
+                onChange={(e) => handleChange(e, regex)}
                 required={required}
+                invalid={value !== "" && error}
             />
+            <FormFeedback>Incorrect field</FormFeedback>
         </div>
     )
 }
