@@ -14,7 +14,7 @@ import { getInputs, sendUser } from '../utils/axiosUtils.js'
 export default function Page({ data, path }) {
   const [formData, setFormData] = useState({})
   const [hasError, setHasError] = useState({})
-  const [notification, setNotification] = useState(null)
+  const [notificationData, setNotificationData] = useState(null)
   const handleChange = (e, config) => {
     const newState = formData
     const { name, value } = e.target
@@ -75,14 +75,15 @@ export default function Page({ data, path }) {
       console.log('Form submitted with data:', formData)
       try {
         const responseData = await sendUser(path, formData)
+        setNotificationData({ message: `${path} ok`, color: 'success' })
         console.log('POST ok', responseData)
       } catch (error) {
         console.log('POST error', error)
-        setNotification(error.response.data)
+        setNotificationData({ message: error.response.data, color: 'danger' })
         //show visual content for user not found or register not made
       }
     } else {
-      setNotification('Check your fields!')
+      setNotificationData({ message: 'Check your fields', color: 'danger' })
     }
   }
 
@@ -210,7 +211,11 @@ export default function Page({ data, path }) {
                 )
               )
             })}
-            {notification && <Alert color='danger'>{notification}</Alert>}
+            {notificationData && (
+              <Alert color={notificationData.color}>
+                {notificationData.message}
+              </Alert>
+            )}
           </form>
         </Col>
       </Row>
