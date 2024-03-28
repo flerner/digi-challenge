@@ -26,7 +26,7 @@ class UserController {
       }
     } catch (err) {
       console.log('error creating user', err)
-      return res.status(400).send('Check your fields!')
+      return res.status(400).send('User already exist')
     }
   }
 }
