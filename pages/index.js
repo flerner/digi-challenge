@@ -20,7 +20,6 @@ export default function Index({ data }) {
 export async function getServerSideProps() {
   try {
     const data = await getAllInputs()
-    console.log(data)
     return {
       props: {
         data,

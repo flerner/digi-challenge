@@ -14,10 +14,16 @@ class UserController {
         console.log('user registered', userRegistered)
         res.json(userRegistered)
       }
-      // if (path == 'login') {
-      //   this.userService.login(user)
-      //   console.log()
-      // }
+      if (path == 'login') {
+        const foundUser = await this.userService.login(user)
+        if (foundUser) {
+          console.log('User found', foundUser)
+          return res.json(foundUser)
+        } else {
+          console.log('User not found')
+          return res.status(404).send('User not found')
+        }
+      }
     } catch (err) {
       console.log('error creating user', err)
       return res.status(400).send('Check your fields!')

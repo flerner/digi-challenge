@@ -71,6 +71,7 @@ export default function Page({ data, path }) {
         console.log('POST ok', responseData)
       } catch (error) {
         console.log('POST error', error)
+        //show visual content for user not found or register not made
       }
     } else {
       console.log('Form not valid')
