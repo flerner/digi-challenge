@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getAllInputs } from '../utils/axiosUtils.js'
+import configService from '../utils/services/ConfigService.js'
 export default function Index({ data }) {
   console.log(data)
   return (
@@ -19,7 +20,7 @@ export default function Index({ data }) {
 
 export async function getServerSideProps() {
   try {
-    const data = await getAllInputs()
+    const data = await configService.getAllInputs()
     return {
       props: {
         data,
