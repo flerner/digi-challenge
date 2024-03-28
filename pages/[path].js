@@ -1,13 +1,20 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Button as ReactstrapButton, Container, Row, Col } from 'reactstrap'
+import {
+  Button as ReactstrapButton,
+  Container,
+  Row,
+  Col,
+  Alert,
+} from 'reactstrap'
 import { Button, Checkbox, ContactUs, InputText, Select } from '../components'
 import { getInputs, sendUser } from '../utils/axiosUtils.js'
 
 export default function Page({ data, path }) {
   const [formData, setFormData] = useState({})
   const [hasError, setHasError] = useState({})
+  const [notification, setNotification] = useState(null)
   const handleChange = (e, config) => {
     const newState = formData
     const { name, value } = e.target
@@ -71,12 +78,14 @@ export default function Page({ data, path }) {
         console.log('POST ok', responseData)
       } catch (error) {
         console.log('POST error', error)
+        setNotification(error.response.data)
         //show visual content for user not found or register not made
       }
     } else {
-      console.log('Form not valid')
+      setNotification('Check your fields!')
     }
   }
+
   const isFormValid = () => {
     return !data.inputs.some((config) => {
       if (config.name === 'custom_country') {
@@ -201,10 +210,12 @@ export default function Page({ data, path }) {
                 )
               )
             })}
+            {notification && <Alert color='danger'>{notification}</Alert>}
           </form>
         </Col>
       </Row>
     </Container>
+
     // <Container>
     //   <Row className='justify-content-center'>
     //     <Col md={6}>
