@@ -8,7 +8,7 @@ export default function Index({ data }) {
         return (
           <li key={index}>
             <Link href={`/${config}`} as={`/${config}`}>
-              <a>{config}</a>
+              {config}
             </Link>
           </li>
         )

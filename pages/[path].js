@@ -51,8 +51,8 @@ export default function Page({ data, path }) {
           hasError[element.name] = false
         } else {
           if (isConfirmField) {
-            initialFormData[element.name + '-confirm'] = ''
-            hasError[element.name + '-confirm'] = true
+            initialFormData[element.name + '_confirm'] = ''
+            hasError[element.name + '_confirm'] = true
           } else {
             initialFormData[element.name] = ''
             hasError[element.name] = true
@@ -92,7 +92,7 @@ export default function Page({ data, path }) {
           name={name}
           label={label}
           handleChange={(e) => handleChange(e, { regex, conditions })}
-          value={formData[name]}
+          value={formData[name] ?? ''}
           regex={regex}
           error={hasError[name]}
         />
@@ -107,7 +107,7 @@ export default function Page({ data, path }) {
           required={required}
           conditions={conditions}
           render={render}
-          value={formData[name]}
+          value={formData[name] ?? ''}
           handleChange={(e) => handleChange(e, { regex, conditions })}
           regex={regex}
           error={hasError[name]}
@@ -118,13 +118,17 @@ export default function Page({ data, path }) {
       return (
         <InputText
           type={type}
-          name={conditions ? name + '-confirm' : name}
+          name={conditions ? name + '_confirm' : name}
           label={label}
           conditions={conditions}
-          value={conditions ? formData[name + '-confirm'] : formData[name]}
+          value={
+            conditions
+              ? formData[name + '_confirm'] ?? ''
+              : formData[name] ?? ''
+          }
           handleChange={(e) => handleChange(e, { regex, conditions })}
           regex={regex}
-          error={conditions ? hasError[name + '-confirm'] : hasError[name]}
+          error={conditions ? hasError[name + '_confirm'] : hasError[name]}
         />
       )
     },
@@ -166,7 +170,7 @@ export default function Page({ data, path }) {
       return !values.some((val) => val === formData[input])
     },
     same: ({ input }) => {
-      return formData[input] === formData[input + '-confirm']
+      return formData[input] === formData[input + '_confirm']
     },
   }
   const checkRenderConditions = (renderConditions) => {

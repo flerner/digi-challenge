@@ -21,17 +21,18 @@ const ConfigurationControllerInstance = new ConfigurationController(
   ConfigurationServiceInstance
 )
 //User requires
+const UserModel = require('./models/mongo/MongoUserSchema.js')
 const UserService = require('./services/UserService')
 const UserController = require('./controllers/UserController')
 //User instances
-const UserServiceInstance = new UserService({})
+const UserServiceInstance = new UserService(UserModel)
 const UserControllerInstance = new UserController(UserServiceInstance)
 
 app.prepare().then(async () => {
   const server = express()
   server.use(bodyParser.json())
   server.use(bodyParser.urlencoded({ extended: true }))
-  //await DBConnection.connect()
+  await DBConnection.connect()
 
   //get configuration by path
   server.get('/configuration/:path', (req, res) =>
@@ -43,8 +44,6 @@ app.prepare().then(async () => {
 
   server.post('/:path', (req, res) => {
     UserControllerInstance.post(req, res)
-
-    return res.sendStatus(200)
   })
 
   server.all('*', (req, res) => {

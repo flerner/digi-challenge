@@ -7,7 +7,7 @@ class DBConnection {
 
   static connect = async () => {
     try {
-      this.client = await connect(`mongodb://127.0.0.1:27017/digi`)
+      this.client = await connect(`mongodb://localhost:27017/digi`)
 
       console.log('connected to digi')
       this.connectOk = true
