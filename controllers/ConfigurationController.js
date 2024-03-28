@@ -11,10 +11,9 @@ class ConfigurationController {
   get(req, res) {
     try {
       const path = req.params.path
-      //check if config exist
-      const configExist = Object.hasOwn(this.configurationService.model, path)
-      if (configExist) {
-        return res.status(200).send(this.configurationService.model[path])
+      const config = this.configurationService.getById(path)
+      if (config) {
+        return res.status(200).send(config)
       } else {
         return res.status(404).send("configuration doesn't exists")
       }
@@ -24,7 +23,8 @@ class ConfigurationController {
   }
   getAll(req, res) {
     try {
-      return res.status(200).send(this.configurationService.model)
+      const config = this.configurationService.getAll()
+      return res.status(200).send(config)
     } catch (error) {
       console.log(error)
     }
