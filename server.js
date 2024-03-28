@@ -7,6 +7,8 @@ const app = next({ dev })
 const handle = app.getRequestHandler()
 const bodyParser = require('body-parser')
 
+const DBConnection = require('./models/mongo/DBConnection.js')
+
 //Configuration requires
 const ConfigurationModel = require('./models/inputs.json')
 const ConfigurationService = require('./services/ConfigurationService')
@@ -25,14 +27,18 @@ const UserController = require('./controllers/UserController')
 const UserServiceInstance = new UserService({})
 const UserControllerInstance = new UserController(UserServiceInstance)
 
-app.prepare().then(() => {
+app.prepare().then(async () => {
   const server = express()
   server.use(bodyParser.json())
   server.use(bodyParser.urlencoded({ extended: true }))
+  //await DBConnection.connect()
 
   //get configuration by path
   server.get('/configuration/:path', (req, res) =>
     ConfigurationControllerInstance.get(req, res)
+  )
+  server.get('/configuration/', (req, res) =>
+    ConfigurationControllerInstance.getAll(req, res)
   )
 
   server.post('/:path', (req, res) => {

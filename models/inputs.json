@@ -114,5 +114,41 @@
         "label": "¿Any problem? Contact us"
       }
     ]
+  },
+  "recovery": {
+    "title": "Welcome back",
+    "inputs": [
+      {
+        "type": "password",
+        "name": "password",
+        "label": "Password",
+        "regex": "^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$",
+        "required": true
+      },
+      {
+        "type": "checkbox",
+        "name": "remember",
+        "label": "Remember me"
+      },
+      {
+        "type": "button",
+        "label": "Login",
+        "method": "login"
+      },
+      {
+        "type": "select",
+        "name": "country",
+        "label": "¿Where are you living?",
+        "options": [
+          { "value": "argentina", "label": "Argentina" },
+          { "value": "other", "label": "Other" }
+        ]
+      },
+      {
+        "type": "link",
+        "target": "https://digiventures.la/",
+        "text": "¿Any problem? Contact us"
+      }
+    ]
   }
 }

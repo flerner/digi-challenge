@@ -9,6 +9,17 @@ export async function getInputs(path) {
     throw error
   }
 }
+
+export async function getAllInputs() {
+  try {
+    const res = await axios.get(`http://localhost:3000/configuration`)
+    return res.data
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    throw error
+  }
+}
+
 export async function sendUser(path, data) {
   try {
     const response = await axios.post(`http://localhost:3000/${path}`, data)

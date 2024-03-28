@@ -22,6 +22,13 @@ class ConfigurationController {
       console.log(error)
     }
   }
+  getAll(req, res) {
+    try {
+      return res.status(200).send(this.configurationService.model)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 }
 
 module.exports = ConfigurationController
