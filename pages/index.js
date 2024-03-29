@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import configService from '../utils/services/ConfigService.js'
 export default function Index({ data }) {
-  console.log(data)
   return (
     <ul>
       {Object.keys(data)
@@ -28,7 +27,7 @@ export async function getServerSideProps() {
       },
     }
   } catch (error) {
-    console.error('Error fetching data:', error)
+    console.error(error)
     return {
       props: {
         data: [],

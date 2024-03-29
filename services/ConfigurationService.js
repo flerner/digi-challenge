@@ -1,7 +1,7 @@
 class ConfigurationService {
   constructor(model) {
     this.model = model //configuration page model
-    this.DIGI_CONFIG_ID = '6607021a04f90a898ce697b6' //I hardcoded the ID for exercise reasons as this is not in the scope
+    this.DIGI_CONFIG_ID = '6607023504f90a898ce697b7' //I hardcoded the ID for exercise reasons as this is not in the scope
     //in a more scalable code I would get all configs and iterate that array of configs to send all to client
   }
 

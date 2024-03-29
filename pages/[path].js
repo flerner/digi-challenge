@@ -41,7 +41,6 @@ export default function Page({ data, path }) {
   useEffect(() => {
     const initialFormData = {}
 
-    //initialize all data in empty or false
     data.inputs.forEach((element) => {
       if (element.name) {
         const isConfirmField = element?.conditions?.validations?.some(
@@ -231,7 +230,7 @@ export async function getServerSideProps({ params }) {
       },
     }
   } catch (error) {
-    console.error('Error fetching data:', error)
+    console.error(error)
     return {
       redirect: {
         destination: '/404',
