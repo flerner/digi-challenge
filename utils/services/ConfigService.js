@@ -19,6 +19,7 @@ export default {
   async getAllInputs() {
     try {
       const res = await apiConfig.get(`/`)
+      console.log('from configservice', res.data)
       return res.data
     } catch (error) {
       console.error('Error fetching data:', error)
