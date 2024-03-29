@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { getAllInputs } from '../utils/axiosUtils.js'
 import configService from '../utils/services/ConfigService.js'
 export default function Index({ data }) {
   console.log(data)
