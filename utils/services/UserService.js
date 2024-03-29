@@ -10,7 +10,6 @@ export default {
   async sendUser(path, data) {
     try {
       const response = await apiUser.post(`/${path}`, data)
-      console.log('asd', response)
       return response.data
     } catch (error) {
       console.error('Error making POST request', error.response.data)

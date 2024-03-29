@@ -8,10 +8,10 @@ class ConfigurationController {
     200 if configuration exists
     404 if configuration doesn't exists
   */
-  get(req, res) {
+  async get(req, res) {
     try {
       const path = req.params.path
-      const config = this.configurationService.getById(path)
+      const config = await this.configurationService.getById(path)
       if (config) {
         return res.status(200).send(config)
       } else {
@@ -21,9 +21,10 @@ class ConfigurationController {
       console.log(error)
     }
   }
-  getAll(req, res) {
+  async getAll(req, res) {
     try {
-      const config = this.configurationService.getAll()
+      const config = await this.configurationService.getAll()
+
       return res.status(200).send(config)
     } catch (error) {
       console.log(error)

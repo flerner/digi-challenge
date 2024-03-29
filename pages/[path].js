@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {
@@ -9,7 +8,6 @@ import {
   Alert,
 } from 'reactstrap'
 import { Button, Checkbox, ContactUs, InputText, Select } from '../components'
-import { getInputs, sendUser } from '../utils/axiosUtils.js'
 import userService from '../utils/services/UserService.js'
 import configService from '../utils/services/ConfigService.js'
 export default function Page({ data, path }) {
@@ -73,15 +71,11 @@ export default function Page({ data, path }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (isFormValid()) {
-      console.log('Form submitted with data:', formData)
       try {
         const responseData = await userService.sendUser(path, formData)
         setNotificationData({ message: `${path} ok`, color: 'success' })
-        console.log('POST ok', responseData)
       } catch (error) {
-        console.log('POST error', error)
         setNotificationData({ message: error.response.data, color: 'danger' })
-        //show visual content for user not found or register not made
       }
     } else {
       setNotificationData({ message: 'Check your fields', color: 'danger' })

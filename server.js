@@ -10,7 +10,7 @@ const bodyParser = require('body-parser')
 const DBConnection = require('./models/mongo/DBConnection.js')
 
 //Configuration requires
-const ConfigurationModel = require('./models/inputs.json')
+const ConfigurationModel = require('./models/mongo/MongoConfigSchema.js')
 const ConfigurationService = require('./services/ConfigurationService')
 const ConfigurationController = require('./controllers/ConfigurationController')
 //Configuration instances
