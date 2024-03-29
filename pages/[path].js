@@ -201,6 +201,7 @@ export default function Page({ data, path }) {
       <Row className='justify-content-center'>
         <Col md={6} className='border border-dark rounded'>
           <form onSubmit={handleSubmit}>
+            {data.title && <h1>{data.title}</h1>}
             {data.inputs.map((config, index) => {
               const shouldRender = checkRenderConditions(
                 config?.conditions?.render

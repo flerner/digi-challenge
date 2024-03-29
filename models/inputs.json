@@ -116,7 +116,6 @@
     ]
   },
   "recovery": {
-    "title": "Welcome back",
     "inputs": [
       {
         "type": "password",
